@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реестр путешественников — Вариант №12</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .table-hover tbody tr:hover { background-color: rgba(0, 0, 0, 0.02); }
+        .avatar-img { object-fit: cover; border: 1px solid #dee2e6; }
+        .sort-link { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 5px; }
+        .sort-link:hover { color: #0d6efd; }
+    </style>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">🌍 Travelling Portal</a>
+        <div sec:authorize="isAuthenticated()" class="text-white small d-flex align-items-center gap-3">
+            <span><i class="bi bi-person-badge"></i> <span sec:authentication="name"></span></span>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-sm btn-outline-light py-0">Выйти</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">Реестр путешественников</h2>
+        <a th:href="@{/travellers/create}" sec:authorize="hasRole('ADMIN')" class="btn btn-primary shadow-sm">
+            <i class="bi bi-person-plus-fill"></i> + Новый клиент
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form th:action="@{/travellers}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Код (5 цифр)</label>
+                    <input type="text" name="travelCod" th:value="${param.travelCod}" class="form-control form-control-sm" placeholder="Напр: 12345">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Мин. депозит</label>
+                    <input type="number" name="minDeposit" th:value="${param.minDeposit}" class="form-control form-control-sm" placeholder="0.00">
+                </div>
+                <div class="col-md-6 d-flex gap-2">
+                    <button type="submit" class="btn btn-sm btn-dark px-4">
+                        <i class="bi bi-search"></i> Найти
+                    </button>
+                    <a th:href="@{/travellers}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise"></i> Сброс
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Фото</th>
+                    <th>
+                        <a th:href="@{/travellers(sort='name', dir=${param.dir == 'asc' ? 'desc' : 'asc'})}" class="sort-link">
+                            ФИО (EN)
+                            <i th:class="${param.sort == 'name' && param.dir == 'asc'} ? 'bi bi-sort-alpha-down' : 'bi bi-sort-alpha-up'"></i>
+                        </a>
+                    </th>
+                    <th>Код</th>
+                    <th>
+                        <a th:href="@{/travellers(sort='deposit', dir=${param.dir == 'asc' ? 'desc' : 'asc'})}" class="sort-link">
+                            Депозит
+                            <i th:class="${param.sort == 'deposit' && param.dir == 'asc'} ? 'bi bi-sort-numeric-down' : 'bi bi-sort-numeric-up-alt'"></i>
+                        </a>
+                    </th>
+                    <th>Комментарии</th>
+                    <th>Паспорт</th>
+                    <th class="text-center pe-4">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${travellers}">
+                    <td class="ps-4">
+                        <img th:src="${t.photoUrl != null && !t.photoUrl.isEmpty() ? t.photoUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
+                             class="rounded-circle avatar-img shadow-sm" width="45" height="45">
+                    </td>
+
+                    <td class="fw-bold text-uppercase" th:text="${t.firstName + ' ' + t.secondName}"></td>
+
+                    <td><code class="text-primary fw-bold" th:text="${t.travelCod}"></code></td>
+
+                    <td>
+                        <span th:class="${t.deposit > 0 ? 'fw-bold text-success' : 'text-muted'}"
+                              th:text="${#numbers.formatDecimal(t.deposit, 1, 2) + ' грн'}">
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="text-muted small" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                             th:title="${t.comments}" th:text="${t.comments}"></div>
+                    </td>
+
+                    <td>
+                        <a th:href="@{/passports}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                            <i class="bi bi-folder-symlink"></i>
+                        </a>
+                    </td>
+
+                    <td class="text-center pe-4">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a th:href="@{/travellers/profile/{id}(id=${t.id})}" class="btn btn-info btn-sm text-white shadow-sm">
+                                <i class="bi bi-file-person"></i>
+                            </a>
+
+                            <div sec:authorize="hasRole('ADMIN')" class="d-flex gap-2 border-start ps-2">
+                                <a th:href="@{/travellers/edit/{id}(id=${t.id})}" class="btn btn-sm btn-warning shadow-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form th:action="@{/travellers/delete/{id}(id=${t.id})}" method="post" class="m-0">
+                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" onclick="return confirm('Удалить?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

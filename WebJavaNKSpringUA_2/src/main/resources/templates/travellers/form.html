@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Traveller Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #f0f2f5; padding-top: 50px; padding-bottom: 50px; }
+        .crm-card { background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); padding: 40px; }
+        .header-box { border-left: 5px solid #1a237e; padding-left: 15px; margin-bottom: 30px; }
+        .form-label { font-weight: 600; color: #444; font-size: 0.9rem; }
+        .readonly-input { background-color: #f8f9fa; border-style: dashed; }
+        .btn-save { background: #1a237e; color: white; padding: 12px 30px; border-radius: 8px; border: none; width: 100%; font-weight: bold; transition: 0.3s; }
+        .btn-save:hover { background: #0d1440; transform: translateY(-2px); }
+
+        /* Стили для аватара */
+        .avatar-preview-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #1a237e;
+            overflow: hidden;
+            margin: 0 auto 15px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar-preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="max-width: 900px;">
+    <div class="crm-card">
+        <div class="header-box d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-0">✈ Traveller Registration</h2>
+                <p class="text-muted">Link client passport to a new travel tour</p>
+            </div>
+            <i class="bi bi-airplane-engines fs-1 text-primary opacity-25"></i>
+        </div>
+
+        <form th:action="@{/travellers/save}" th:object="${traveller}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <div class="row mb-4">
+                <div class="col-md-3 text-center border-end">
+                    <label class="form-label d-block">Avatar Preview</label>
+                    <div class="avatar-preview-container">
+                        <img id="avatarImg" th:src="*{photoUrl != null && !photoUrl.isEmpty() ? photoUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" alt="Preview">
+                    </div>
+                    <input type="text" th:field="*{photoUrl}" id="photoUrlInput" class="form-control form-control-sm" placeholder="Paste image URL...">
+                    <small class="text-muted" style="font-size: 0.7rem;">Enter URL of the photo</small>
+                </div>
+
+                <div class="col-md-9 ps-md-4">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label">1. Select Existing Client (Passport)</label>
+                            <select id="passportSelect" class="form-select border-primary shadow-sm">
+                                <option value="">-- Choose Client --</option>
+                                <option th:each="p : ${passports}"
+                                        th:value="${p.firstName + '|' + p.lastName + '|' + p.countryCode}"
+                                        th:text="${p.lastName + ' ' + p.firstName + ' [' + p.passportNumber + ']'}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Travel Code</label>
+                            <input type="text" th:field="*{travelCod}" class="form-control readonly-input text-primary fw-bold" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" th:field="*{firstName}" id="firstName" class="form-control" readonly placeholder="Auto-filled">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" th:field="*{secondName}" id="lastName" class="form-control" readonly placeholder="Auto-filled">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4 opacity-50">
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Phone Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <input type="text" th:field="*{phone}" class="form-control" placeholder="+380...">
+                    </div>
+                    <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger small mt-1"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Hotel Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                        <input type="text" th:field="*{hotelName}" class="form-control" placeholder="Grand Hotel 5*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Country</label>
+                    <select th:field="*{countryCode}" id="countryCode" class="form-select">
+                        <option th:each="c : ${T(com.example.travelling2.model.CountryCode).values()}"
+                                th:value="${c}" th:text="${c.displayValue}"></option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tour Operator</label>
+                    <select th:field="*{tourOperator}" class="form-select">
+                        <option value="Join UP">Join UP</option>
+                        <option value="TUI">TUI</option>
+                        <option value="Anex Tour">Anex Tour</option>
+                        <option value="Coral Travel">Coral Travel</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Deposit ($)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" step="0.01" th:field="*{deposit}" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Arrival Date</label>
+                    <input type="date" th:field="*{arrivalDate}" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Departure Date</label>
+                    <input type="date" th:field="*{departureDate}" class="form-control">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Comments / Special Requests</label>
+                <textarea th:field="*{comments}" class="form-control" rows="3" placeholder="Dietary requirements, room preferences..."></textarea>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <a href="/travellers" class="btn btn-light w-100 py-2 border">Cancel</a>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn-save shadow-sm">REGISTER TOUR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 1. Логика автозаполнения полей при выборе паспорта
+    document.getElementById('passportSelect').addEventListener('change', function() {
+        const val = this.value;
+        if (val) {
+            const parts = val.split('|');
+            document.getElementById('firstName').value = parts[0];
+            document.getElementById('lastName').value = parts[1];
+            document.getElementById('countryCode').value = parts[2];
+        } else {
+            document.getElementById('firstName').value = "";
+            document.getElementById('lastName').value = "";
+        }
+    });
+
+    // 2. Логика живого предпросмотра аватарки
+    const photoUrlInput = document.getElementById('photoUrlInput');
+    const avatarImg = document.getElementById('avatarImg');
+    const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+
+    photoUrlInput.addEventListener('input', function() {
+        const url = this.value.trim();
+        avatarImg.src = url ? url : defaultAvatar;
+    });
+
+    // Обработка ошибки загрузки изображения
+    avatarImg.onerror = function() {
+        this.src = defaultAvatar;
+    };
+</script>
+
+</body>
+</html>

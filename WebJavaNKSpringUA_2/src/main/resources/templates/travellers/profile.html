@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Traveller Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f4f7f6; }
+        .profile-card {
+            max-width: 900px;
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+            background: white;
+        }
+        .card-header-dark {
+            background-color: #212529;
+            color: white;
+            padding: 20px 30px;
+        }
+        .photo-container {
+            width: 220px;
+            height: 220px;
+            border: 4px solid #2b50ed; /* Синяя рамка как на фото */
+            border-radius: 25px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .info-label { color: #6c757d; font-size: 0.95rem; }
+        .info-value { font-weight: 600; color: #212529; }
+        .deposit-value { color: #198754; font-weight: bold; }
+
+        /* Стили комментариев с красной полоской */
+        .comments-box {
+            background-color: #f8f9fa;
+            border-left: 5px solid #d61f26; /* Красный акцент */
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-top: 30px;
+        }
+
+        /* Коды в шапке */
+        .header-codes { text-align: right; }
+        .security-code-badge {
+            background: white;
+            color: #d61f26;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .travel-code-text {
+            color: #ffc107;
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card profile-card shadow">
+        <div class="card-header-dark d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-passport-fill me-2"></i> Passport & Details</h4>
+            <div class="header-codes">
+                <div class="security-badge-container">
+                    <small style="font-size: 0.7rem; color: #adb5bd;">Security Code for deletion:</small>
+                    <span class="security-code-badge" id="targetCode" th:text="${securityCode}">8601</span>
+                </div>
+                <span class="travel-code-text" th:text="${traveller.travelCod}">TR-JQ30-ST7X-44YX-L97W-F4</span>
+            </div>
+        </div>
+
+        <div class="card-body p-5">
+            <div class="row">
+                <div class="col-md-5 text-center border-end">
+                    <div class="photo-container mb-3 shadow-sm">
+                        <img th:src="${traveller.photoUrl != null && !traveller.photoUrl.isEmpty() ? traveller.photoUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
+                             alt="Traveller Photo">
+                    </div>
+                    <h3 class="fw-bold mb-1" th:text="${traveller.firstName + ' ' + traveller.secondName}">Dzhonni Dzhostar</h3>
+                    <p class="text-muted"><i class="bi bi-geo-alt-fill me-1"></i> <span th:text="${traveller.countryCode}">MDA</span></p>
+                </div>
+
+                <div class="col-md-7 ps-md-5">
+                    <div class="row mb-3">
+                        <div class="col-6 info-label">Tour Operator:</div>
+                        <div class="col-6 info-value" th:text="${traveller.tourOperator}">Join UP</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 info-label">Hotel:</div>
+                        <div class="col-6 info-value" th:text="${traveller.hotelName}">Grand</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 info-label">Phone Number:</div>
+                        <div class="col-6 info-value text-primary" th:text="${traveller.phone}">+380501234567</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 info-label">Arrival:</div>
+                        <div class="col-6 info-value">
+                            <i class="bi bi-airplane-engines me-1"></i>
+                            <span th:text="${traveller.arrivalDate}">2026-05-22</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 info-label">Departure:</div>
+                        <div class="col-6 info-value" th:text="${traveller.departureDate}">2026-06-07</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 info-label">Deposit:</div>
+                        <div class="col-6 info-value deposit-value" th:text="${traveller.deposit + ' $'}">23.0 $</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comments-box">
+                <small class="fw-bold text-muted text-uppercase d-block mb-1" style="font-size: 0.75rem;">Comments / Requests:</small>
+                <p class="mb-0" th:text="${traveller.comments != null && !traveller.comments.isEmpty() ? traveller.comments : 'No comments.'}">Капуста</p>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white border-0 p-4 d-flex justify-content-between">
+            <a href="/travellers" class="btn btn-outline-dark rounded-pill px-4">
+                <i class="bi bi-arrow-left me-2"></i> Back
+            </a>
+            <div class="d-flex gap-2">
+                <a th:href="@{'/travellers/edit/' + ${traveller.id}}" class="btn btn-warning rounded-pill px-4 fw-bold">
+                    <i class="bi bi-pencil-fill me-2"></i> Edit Profile
+                </a>
+                <button class="btn btn-danger rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="bi bi-trash-fill me-2"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p>Enter security code <b th:text="${securityCode}"></b> to delete:</p>
+                <input type="text" id="confirmCodeInput" class="form-control form-control-lg text-center fw-bold mb-3" maxlength="4">
+                <form th:action="@{'/travellers/delete/' + ${traveller.id}}" method="post">
+                    <button type="submit" id="finalDeleteBtn" class="btn btn-danger w-100 py-2 rounded-pill disabled">
+                        Permanently Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const targetCode = document.getElementById('targetCode').innerText.trim();
+    const inputField = document.getElementById('confirmCodeInput');
+    const deleteBtn = document.getElementById('finalDeleteBtn');
+
+    inputField.addEventListener('input', function() {
+        if (this.value === targetCode) {
+            deleteBtn.classList.remove('disabled');
+        } else {
+            deleteBtn.classList.add('disabled');
+        }
+    });
+</script>
+
+</body>
+</html>

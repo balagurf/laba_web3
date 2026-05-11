@@ -1,0 +1,309 @@
+:root {
+    --md-blue: #0033A0;
+    --md-yellow: #FFD100;
+    --md-red: #CE1126;
+    --crm-gradient: linear-gradient(90deg, #0ea5e9, #6366f1);
+}
+
+body {
+    font-family: 'Inter', 'Arial', sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* CRM Table Card */
+.card-crm {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+/* Passport Card */
+.passport-card {
+    display: flex;
+    max-width: 1000px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    overflow: hidden;
+    border-top: 8px solid var(--md-blue);
+    border-bottom: 8px solid var(--md-red);
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-left {
+    flex: 1;
+    padding: 30px;
+    background: #fafafa;
+    border-right: 3px solid var(--md-yellow);
+    text-align: center;
+    position: relative;
+}
+
+.photo-container {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto 20px;
+    border: 5px solid var(--md-blue);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.security-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--md-red);
+    color: white;
+    padding: 5px 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.card-right { flex: 2; padding: 30px; }
+
+.info-label { font-size: 11px; color: #777; text-transform: uppercase; margin-top: 10px; font-weight: 600;}
+.info-value { font-size: 18px; font-weight: bold; color: var(--md-blue); margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 3px;}
+
+.history-box {
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    min-height: 120px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.delete-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff5f5;
+    border: 1px solid var(--md-red);
+    border-radius: 10px;
+}
+.page-top-bar {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    text-decoration: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    background: #1f2937;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.92;
+}
+
+.nav-home {
+    background: linear-gradient(90deg, #0ea5e9, #2563eb);
+}
+
+.btn-edit {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.passport-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.passport-title {
+    color: var(--md-blue);
+    margin-bottom: 4px;
+}
+
+.passport-subtitle {
+    color: #666;
+    margin: 0;
+}
+
+.passport-status {
+    background: #dcfce7;
+    color: #166534;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.info-block {
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid #eee;
+}
+
+.big-code {
+    font-size: 24px !important;
+    letter-spacing: 2px;
+    word-break: break-word;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.delete-box {
+    margin-top: 25px;
+    background: #fff5f5;
+    border: 2px solid #fecaca;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.danger-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #b91c1c;
+    margin-bottom: 10px;
+}
+
+.danger-text {
+    color: #7f1d1d;
+    margin-bottom: 15px;
+}
+
+.secure-code-preview {
+    background: #111827;
+    color: #10b981;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+}
+
+.delete-form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.delete-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+}
+
+.delete-btn {
+    background: linear-gradient(90deg, #dc2626, #991b1b);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete-btn:hover {
+    transform: scale(1.03);
+}
+
+.delete-error {
+    margin-top: 14px;
+    color: #dc2626;
+    font-weight: bold;
+}
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    width: 420px;
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    animation: fadeIn 0.25s ease;
+}
+
+.modal-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-modal-btn {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.modal-text {
+    color: #555;
+    margin-top: 10px;
+}
+
+.generated-code {
+    margin-top: 20px;
+    background: #111827;
+    color: #10b981;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 28px;
+    text-align: center;
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+
+.timer-text {
+    text-align: center;
+    margin-top: 10px;
+    color: #dc2626;
+    font-size: 18px;
+    font-weight: bold;
+}
+/* Form Styling */
+.form-control { border-radius: 10px; border: 1px solid #e5e7eb; padding: 10px; }
+.btn-crm { border-radius: 10px; font-weight: 600; transition: 0.3s; }
+.btn-primary-crm { background: var(--crm-gradient); border: none; color: white; }
+.btn-primary-crm:hover { opacity: 0.9; transform: scale(1.02); }
