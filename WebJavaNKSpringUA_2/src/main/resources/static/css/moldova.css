@@ -302,6 +302,44 @@ body {
     font-size: 18px;
     font-weight: bold;
 }
+.captcha-wrapper {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+/* Внутренний неподвижный круг */
+.disk-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/your-puzzle-image.jpg'); /* Твоя картинка */
+    background-size: cover;
+    /* Вырезаем круг в центре (радиус 40%) */
+    mask-image: radial-gradient(black 40%, transparent 40.5%);
+    -webkit-mask-image: radial-gradient(black 40%, transparent 40.5%);
+}
+
+/* Внешнее кольцо, которое будет вращаться */
+.disk-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/your-puzzle-image.jpg');
+    background-size: cover;
+    /* Оставляем всё, КРОМЕ центра */
+    mask-image: radial-gradient(transparent 40%, black 40.5%);
+    -webkit-mask-image: radial-gradient(transparent 40%, black 40.5%);
+    /* transition: transform 0.1s; - если хочешь плавность */
+}
+
+/* Ползунок под капчей */
+.captcha-slider {
+    width: 250px;
+    margin-top: 20px;
+}
 /* Form Styling */
 .form-control { border-radius: 10px; border: 1px solid #e5e7eb; padding: 10px; }
 .btn-crm { border-radius: 10px; font-weight: 600; transition: 0.3s; }

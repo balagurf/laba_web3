@@ -17,6 +17,11 @@ public class Passport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Связь Detail -> Master
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "traveller_id", nullable = false)
+    private Traveller traveller;
+
     @Column(name = "passport_code", nullable = false, unique = true, length = 30)
     private String passportCode;
 
@@ -29,11 +34,14 @@ public class Passport {
     private String taxCode;
 
     @NotBlank(message = "Введите имя")
+    @Pattern(regexp = "^[^0-9]+$", message = "Имя не должно содержать цифры")
     private String firstName;
 
     @NotBlank(message = "Введите фамилию")
+    @Pattern(regexp = "^[^0-9]+$", message = "Фамилия не должна содержать цифры")
     private String lastName;
 
+    @Pattern(regexp = "^[^0-9]*$", message = "Отчество не должно содержать цифры")
     private String patronymic;
 
     @NotBlank(message = "Введите телефон")

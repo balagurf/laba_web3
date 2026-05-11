@@ -4,6 +4,7 @@ import com.example.travelling2.entity.Traveller;
 import com.example.travelling2.repository.TravellerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification; // Нужно добавить этот импорт
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,12 @@ public class TravellerServiceImpl implements TravellerService {
 
     @Override
     public List<Traveller> findAll(Sort sort) { return repo.findAll(sort); }
+
+    // ДОБАВЬТЕ ЭТОТ МЕТОД:
+    @Override
+    public List<Traveller> findAll(Specification<Traveller> spec, Sort sort) {
+        return repo.findAll(spec, sort);
+    }
 
     @Override
     public Traveller findById(Long id) { return repo.findById(id).orElseThrow(); }

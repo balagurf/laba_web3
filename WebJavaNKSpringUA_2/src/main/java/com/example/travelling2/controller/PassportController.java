@@ -2,6 +2,7 @@ package com.example.travelling2.controller;
 
 import com.example.travelling2.entity.Passport;
 import com.example.travelling2.service.PassportService;
+import com.example.travelling2.service.TravellerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,51 +16,55 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class PassportController {
 
-    private final PassportService service;
+    private final PassportService passportService;
+    private final TravellerService travellerService;
 
     @GetMapping
     public String list(@RequestParam(required = false) String search, Model model) {
-        model.addAttribute("passports", service.search(search));
+        model.addAttribute("passports", passportService.search(search));
         return "passports/list";
     }
 
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(@RequestParam(required = false) Long travellerId, Model model) {
         Passport passport = new Passport();
-        passport.setPassportCode(service.generatePassportCode());
-        passport.setPassportNumber(service.generatePassportNumber());
+        passport.setPassportCode(passportService.generatePassportCode());
+        passport.setPassportNumber(passportService.generatePassportNumber());
+
+        if (travellerId != null) {
+            passport.setTraveller(travellerService.findById(travellerId));
+        }
+
         model.addAttribute("passport", passport);
+        model.addAttribute("travellers", travellerService.findAll()); // Список для селекта
         return "passports/form";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        model.addAttribute("passport", service.findById(id));
+        model.addAttribute("passport", passportService.findById(id));
+        model.addAttribute("travellers", travellerService.findAll());
         return "passports/form";
     }
 
     @PostMapping("/save")
-    public String save(@Valid @ModelAttribute("passport") Passport passport, BindingResult result) {
-        if (!service.isPassportCodeUnique(passport.getPassportCode(), passport.getId())) {
+    public String save(@Valid @ModelAttribute("passport") Passport passport, BindingResult result, Model model) {
+        if (!passportService.isPassportCodeUnique(passport.getPassportCode(), passport.getId())) {
             result.rejectValue("passportCode", "duplicate", "Этот код уже используется");
         }
-        if (result.hasErrors()) return "passports/form";
+        if (result.hasErrors()) {
+            model.addAttribute("travellers", travellerService.findAll());
+            return "passports/form";
+        }
 
-        service.save(passport);
+        passportService.save(passport);
         return "redirect:/passports";
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id,
-                         @RequestParam String confirmCode,
-                         @RequestParam String actualCode,
-                         RedirectAttributes ra) {
-        if (confirmCode != null && confirmCode.equalsIgnoreCase(actualCode)) {
-            service.delete(id);
-            ra.addFlashAttribute("message", "Паспорт успешно удален");
-        } else {
-            ra.addFlashAttribute("error", "Код подтверждения не совпал!");
-        }
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        passportService.delete(id);
+        ra.addFlashAttribute("message", "Паспорт успешно удален");
         return "redirect:/passports";
     }
 }
