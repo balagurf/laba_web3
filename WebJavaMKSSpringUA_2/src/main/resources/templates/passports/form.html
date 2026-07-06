@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация Паспорта</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f4f7f6; }
+        .passport-card {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            border-left: 5px solid #0d6efd;
+            padding-left: 15px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="passport-card">
+        <h3 class="mb-4"><i class="bi bi-passport-fill me-2 text-primary"></i> Регистрация Паспорта</h3>
+
+        <form th:action="@{/passports/save}" th:object="${passport}" method="post" id="passportForm">
+
+            <!-- КРИТИЧНО: Блок ошибок внутри формы -->
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Ошибка!</strong> Пожалуйста, исправьте ошибки в полях ниже.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="section-title">Привязка к Путешественнику</div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <label class="form-label">Выберите владельца паспорта</label>
+                    <select th:field="*{traveller}" class="form-select shadow-sm">
+                        <option value="">-- Без привязки (самостоятельный) --</option>
+                        <option th:each="t : ${travellers}"
+                                th:value="${t.id}"
+                                th:text="${t.firstName + ' ' + t.secondName + ' (' + t.travelCod + ')'}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">Основная информация</div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Системный код</label>
+                    <input type="text" th:field="*{passportCode}" class="form-control"
+                           th:classappend="${#fields.hasErrors('passportCode')} ? 'is-invalid' : ''" readonly>
+                    <div class="invalid-feedback" th:errors="*{passportCode}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Номер паспорта (XX1234567) *</label>
+                    <input type="text" th:field="*{passportNumber}" class="form-control"
+                           th:classappend="${#fields.hasErrors('passportNumber')} ? 'is-invalid' : ''" placeholder="AA1234567">
+                    <div class="invalid-feedback" th:errors="*{passportNumber}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Налоговый код (ИНН) *</label>
+                    <input type="text" th:field="*{taxCode}" class="form-control"
+                           th:classappend="${#fields.hasErrors('taxCode')} ? 'is-invalid' : ''">
+                    <div class="invalid-feedback" th:errors="*{taxCode}"></div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Имя *</label>
+                    <input type="text" th:field="*{firstName}" class="form-control" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Фамилия *</label>
+                    <input type="text" th:field="*{lastName}" class="form-control" th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Отчество</label>
+                    <input type="text" th:field="*{patronymic}" class="form-control">
+                </div>
+            </div>
+
+            <div class="section-title">Контакты и Локация</div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Телефон (+380...) *</label>
+                    <input type="text" th:field="*{phone}" class="form-control"
+                           th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" placeholder="+380123456789">
+                    <div class="invalid-feedback" th:errors="*{phone}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Email *</label>
+                    <input type="email" th:field="*{email}" class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Страна *</label>
+                    <select th:field="*{countryCode}" class="form-select">
+                        <option th:each="code : ${T(com.example.travelling2.model.CountryCode).values()}"
+                                th:value="${code}" th:text="${code}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">Даты поездки</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Дата прибытия</label>
+                    <input type="date" th:field="*{arrivalDate}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Дата выезда</label>
+                    <input type="date" th:field="*{departureDate}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Срок действия паспорта</label>
+                    <input type="date" th:field="*{expiryDate}" class="form-control">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-5 border-top pt-4">
+                <a th:href="@{/passports}" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-arrow-left"></i> Назад к списку
+                </a>
+                <button type="submit" class="btn btn-primary px-5 shadow">
+                    <i class="bi bi-check-circle me-2"></i> Сохранить Паспорт
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

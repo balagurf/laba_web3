@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль клиента</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light py-5">
+<div class="container" style="max-width: 800px;">
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="bg-primary text-white p-4 d-flex justify-content-between align-items-center">
+            <h3 class="m-0"><i class="bi bi-person-vcard"></i> Личная карточка</h3>
+            <span class="badge bg-light text-primary fs-6" th:text="${traveller.travelCod}"></span>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            <div class="row align-items-center mb-4">
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+                    <img th:src="${traveller.photoUrl != null && !traveller.photoUrl.isEmpty() ? traveller.photoUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
+                         class="img-fluid rounded-circle border border-4 border-light shadow-sm"
+                         style="width: 160px; height: 160px; object-fit: cover;" alt="Avatar">
+                </div>
+                <div class="col-md-8">
+                    <h2 class="fw-bold mb-1" th:text="${traveller.firstName + ' ' + traveller.secondName}">Имя Фамилия</h2>
+                    <p class="text-muted mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> <span th:text="${traveller.countryCode.displayValue}"></span></p>
+
+                    <div class="d-flex gap-3 text-muted">
+                        <div><i class="bi bi-telephone-fill"></i> <span th:text="${traveller.phone}"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="opacity-25 mb-4">
+
+            <h5 class="fw-bold text-secondary mb-3">Информация о туре</h5>
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="small text-muted mb-1">Туроператор</div>
+                        <div class="fw-bold" th:text="${traveller.tourOperator ?: 'Не указан'}"></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="small text-muted mb-1">Отель</div>
+                        <div class="fw-bold" th:text="${traveller.hotelName ?: 'Не указан'}"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="small text-muted mb-1">Прилет</div>
+                        <div class="fw-bold" th:text="${traveller.arrivalDate ?: '-'}"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="small text-muted mb-1">Вылет</div>
+                        <div class="fw-bold" th:text="${traveller.departureDate ?: '-'}"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="p-3 bg-light rounded-3 border border-success">
+                        <div class="small text-muted mb-1">Депозит</div>
+                        <div class="fw-bold text-success fs-5">$<span th:text="${traveller.deposit}"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${traveller.comments != null && !traveller.comments.isEmpty()}" class="mt-4">
+                <h5 class="fw-bold text-secondary mb-2">Комментарии</h5>
+                <p class="bg-light p-3 rounded-3 border" th:text="${traveller.comments}"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a th:href="@{/travellers}" class="btn btn-outline-secondary px-5 py-2"><i class="bi bi-arrow-left"></i> Вернуться к списку</a>
+    </div>
+
+</div>
+</body>
+</html>

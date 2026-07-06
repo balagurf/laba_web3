@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль паспорта</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light py-5">
+<div class="container border rounded bg-white shadow p-4" style="max-width: 600px;">
+    <h2 class="text-center mb-4">Карточка паспорта</h2>
+
+    <div class="row mb-3 border-bottom pb-2">
+        <div class="col-6 fw-bold">Владелец:</div>
+        <div class="col-6" th:text="${passport.lastName + ' ' + passport.firstName + ' ' + passport.patronymic}"></div>
+    </div>
+    <div class="row mb-3 border-bottom pb-2">
+        <div class="col-6 fw-bold">Номер:</div>
+        <div class="col-6" th:text="${passport.passportNumber}"></div>
+    </div>
+    <div class="row mb-3 border-bottom pb-2">
+        <div class="col-6 fw-bold">Страна:</div>
+        <div class="col-6 text-uppercase" th:text="${passport.countryCode.displayValue}"></div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-6 fw-bold">Баланс:</div>
+        <div class="col-6 text-success fw-bold" th:text="${passport.balance + ' $'}"></div>
+    </div>
+
+    <div class="alert alert-danger mt-4">
+        <h5 class="alert-heading small fw-bold">Зона риска: Удаление</h5>
+        <p class="small">Для удаления введите код: <strong th:text="${securityCode}"></strong></p>
+
+        <form th:action="@{/passports/delete/{id}(id=${passport.id})}" method="post" class="row g-2">
+            <input type="hidden" name="actualCode" th:value="${securityCode}">
+            <div class="col-8">
+                <input type="text" name="confirmCode" class="form-control form-control-sm" placeholder="Код подтверждения" required>
+            </div>
+            <div class="col-4">
+                <button type="submit" class="btn btn-danger btn-sm w-100">Удалить</button>
+            </div>
+        </form>
+
+        <div th:if="${error}" class="text-danger small mt-2">
+            ⚠️ Неверный код! Попробуйте снова.
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a th:href="@{/passports}" class="btn btn-link text-secondary">Вернуться к списку</a>
+    </div>
+</div>
+</body>
+</html>
